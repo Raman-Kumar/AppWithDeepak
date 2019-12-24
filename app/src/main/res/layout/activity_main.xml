@@ -33,7 +33,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:hint="Enter % to compress"
-                android:ems="10"
+                android:ems="8"
                 android:inputType="numberDecimal" />
 
             <Button
@@ -41,6 +41,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:text="Compress" />
+
+            <TextView
+                android:id="@+id/sizedisplay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="21dp"
+                android:text="size" />
 
 
         </LinearLayout>
