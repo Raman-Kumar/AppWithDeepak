@@ -12,7 +12,9 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -27,6 +29,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -44,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
     Button saveImageBtn;
 
     Bitmap orignalImage;
-
+    Bitmap decoded;
 
     Uri sourceUri;
     String sourceUriText;
@@ -78,11 +81,13 @@ public class MainActivity extends AppCompatActivity {
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
                     bitmap.compress(Bitmap.CompressFormat.JPEG, Integer.parseInt(percentage.getText().toString()), stream);
                     byte[] imageInByte = stream.toByteArray();
-                    long lengthbmp = imageInByte.length;
-                    sizeView.setText((lengthbmp/ (long)8192)+" KB");
+                    int lengthbmp = imageInByte.length;
+//                    sizeView.setText((lengthbmp/8192)+" KB");
+//                    sizeView.setText((stream.size()/1024) +" KB");
 
-                    Bitmap decoded = BitmapFactory.decodeStream(new ByteArrayInputStream(imageInByte));
+                    decoded = BitmapFactory.decodeStream(new ByteArrayInputStream(imageInByte));
                     imageArea.setImageBitmap(decoded);
+                    sizeView.setText((lengthbmp/1000)+" KB");
                     Toast.makeText(MainActivity.this, "Compressed good job!", Toast.LENGTH_LONG).show();
 
                 }catch (Exception e){
@@ -108,6 +113,57 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        saveImageBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(!(ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE )
+                        == PackageManager.PERMISSION_GRANTED)){
+                    requestStoragePermission();
+                }
+                if(!(ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE )
+                        == PackageManager.PERMISSION_GRANTED)){
+                    return;
+                }
+                saveImageBtn.setEnabled(false);
+
+                File filepath = Environment.getExternalStorageDirectory();
+                File dir = new File(filepath.getAbsoluteFile().getAbsolutePath() + "/DeepakRaman77/");
+                dir.mkdirs();
+
+                String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+
+                File file = new File(dir, timeStamp + extension);
+
+                try {
+                    FileOutputStream out = new FileOutputStream(file);
+
+                    // Compress into png format image from 0% - 100%
+                    decoded.compress(Bitmap.CompressFormat.JPEG, 100, out);
+                    out.flush();
+                    out.close();
+
+//                    Toast.makeText(MainActivity.this, "File saved", Toast.LENGTH_LONG).show();
+                }
+
+                catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                    Toast.makeText(MainActivity.this, "Not saved", Toast.LENGTH_LONG).show();
+                }
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    final Intent scanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                    final Uri contentUri = Uri.fromFile(file);
+                    scanIntent.setData(contentUri);
+                    sendBroadcast(scanIntent);
+                } else {
+                    final Intent intent = new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://" + Environment.getExternalStorageDirectory()));
+                    sendBroadcast(intent);
+                }
+                saveImageBtn.setEnabled(true);
+            }
+        });
     }
 
     @Override
