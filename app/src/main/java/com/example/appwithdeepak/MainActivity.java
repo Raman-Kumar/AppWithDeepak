@@ -14,6 +14,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
@@ -24,7 +25,10 @@ import android.widget.Toast;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,13 +39,16 @@ public class MainActivity extends AppCompatActivity {
     Button compressBtn;
     EditText percentage;
     TextView sizeView;
+    TextView extensionView;
     Button getImageBtn;
+    Button saveImageBtn;
 
     Bitmap orignalImage;
 
 
     Uri sourceUri;
     String sourceUriText;
+    String extension = ".jpg";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +59,10 @@ public class MainActivity extends AppCompatActivity {
         imageArea = findViewById(R.id.imagedisplay);
         compressBtn = findViewById(R.id.compressbutton);
         getImageBtn = findViewById(R.id.loadImage);
+        saveImageBtn = findViewById(R.id.saveImage);
         percentage = findViewById(R.id.percent);
         sizeView = findViewById(R.id.sizedisplay);
+        extensionView = findViewById(R.id.extensionDisplay);
 
         // getting an butterfly.jpg image
         orignalImage = BitmapFactory.decodeResource(getResources(),R.drawable.butterfly);
@@ -98,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
     }
 
     @Override
@@ -123,15 +133,16 @@ public class MainActivity extends AppCompatActivity {
                     cursor.close();
 
 //                    Toast.makeText(MainActivity.this, "String test " + filePath.substring(filePath.lastIndexOf(".") + 1), Toast.LENGTH_LONG).show();
-
+                    extension = "." + filePath.substring(filePath.lastIndexOf(".") + 1);
+                    extensionView.setText(extension + "");
                     try {
-                    orignalImage = BitmapFactory.decodeStream(
-                            getContentResolver().openInputStream(sourceUri));
-                    imageArea.setImageBitmap(orignalImage);
-            } catch (FileNotFoundException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-                Toast.makeText(this,"file error", Toast.LENGTH_SHORT);
+                        orignalImage = BitmapFactory.decodeStream(
+                                getContentResolver().openInputStream(sourceUri));
+                        imageArea.setImageBitmap(orignalImage);
+                    } catch (FileNotFoundException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                        Toast.makeText(this,"file error", Toast.LENGTH_SHORT);
             }
 
             }

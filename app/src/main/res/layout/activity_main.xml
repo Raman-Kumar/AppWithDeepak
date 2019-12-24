@@ -8,37 +8,42 @@
     tools:context=".MainActivity">
 
 
-    <Button
-        android:id="@+id/loadImage"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Get Image" />
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/loadImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Get Image" />
+
+        <Button
+            android:id="@+id/saveImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Save Image" />
+
+        <TextView
+            android:id="@+id/extensionDisplay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="21dp"
+            android:text=".jpg" />
+    </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-<!--            <Button-->
-<!--                android:id="@+id/loadimage"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="Get Image" />-->
-
-<!--            <Button-->
-<!--                android:id="@+id/savetogallery"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="save" />-->
-
-
-
             <EditText
                 android:id="@+id/percent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="Enter % to compress"
+                android:hint="Enter 1 to 100 %"
                 android:ems="8"
                 android:inputType="numberDecimal" />
 
